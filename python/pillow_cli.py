@@ -1,6 +1,7 @@
 import click
 from PIL import Image
 from PIL import ImageOps
+from PIL import ImageChops
 import numpy as np
 
 
@@ -62,6 +63,29 @@ def create():
     '''create tiny sample image'''
     array = np.eye(10) * 255
     image = convert_array_to_image(array)
+    save(image)
+
+
+@cli.command()
+@click.argument('image', type=click.Path(exists=True), required=True)
+@click.option('--equalize', '-e', is_flag=True)
+def grayscale(image, equalize):
+    image = Image.open(image)
+    if equalize is True:
+        image = ImageOps.equalize(image)
+    image = image.convert("L")
+    save(image)
+
+
+@cli.command()
+@click.argument('image', type=click.Path(exists=True), required=True)
+@click.option('--equalize', '-e', is_flag=True)
+def threshold(image, equalize):
+    image = Image.open(image)
+    if equalize is True:
+        image = ImageOps.equalize(image)
+    image = image.convert("L")
+    image = image.point(lambda x: 0 if x < 230 else x)
     save(image)
 
 
