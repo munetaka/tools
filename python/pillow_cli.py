@@ -98,6 +98,15 @@ def equalize(image):
     save(image)
 
 
+@cli.command()
+@click.argument('image1', type=click.Path(exists=True), required=True)
+@click.argument('image2', type=click.Path(exists=True), required=True)
+def difference(image1, image2):
+    image1 = Image.open(image1)
+    image2 = Image.open(image2)
+    print(ImageChops.difference(image1, image2).getbbox())
+
+
 def main():
     cli()
 
