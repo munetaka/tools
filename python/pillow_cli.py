@@ -20,7 +20,7 @@ def convert_array_to_image(array):
 
 
 def convert_pil_to_array(image):
-    pass
+    return np.asarray(image)
 
 
 @cli.command(short_help='resize image')
