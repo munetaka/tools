@@ -104,7 +104,7 @@ def equalize(image):
 def difference(image1, image2):
     image1 = Image.open(image1)
     image2 = Image.open(image2)
-    print(ImageChops.difference(image1, image2).getbbox())
+    click.echo(ImageChops.difference(image1, image2).getbbox())
 
 
 def main():
