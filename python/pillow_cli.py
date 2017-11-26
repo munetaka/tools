@@ -6,13 +6,18 @@ import numpy as np
 
 
 @click.group()
-def cli():
+@click.option('--out', '-o', default=None)
+@click.pass_context
+def cli(ctx, out):
+    ctx.obj['out'] = out
     pass
 
 
-def save(image):
-    OUTPUT = 'out.jpg'
-    image.save(OUTPUT)
+@click.pass_context
+def save(ctx, image):
+    if ctx.obj.get('out') is not None:
+        click.echo('output to {}'.format(ctx.obj.get('out')))
+        image.save(ctx.obj.get('out'))
 
 
 def convert_array_to_image(array):
@@ -108,7 +113,7 @@ def difference(image1, image2):
 
 
 def main():
-    cli()
+    cli(obj={})
 
 
 if __name__ == '__main__':
