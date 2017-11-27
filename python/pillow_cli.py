@@ -2,6 +2,7 @@ import click
 from PIL import Image
 from PIL import ImageOps
 from PIL import ImageChops
+from PIL import ImageFilter
 import numpy as np
 
 
@@ -39,7 +40,7 @@ def resize(image, size):
     save(im)
 
 
-@cli.command(short_help='blend images')
+@cli.command(short_help='blend two images')
 @click.argument('image1', type=click.Path(exists=True), required=True)
 @click.argument('image2', type=click.Path(exists=True), required=True)
 @click.argument('alpha', default=0.5)
@@ -111,6 +112,180 @@ def difference(image1, image2):
     im1 = Image.open(image1)
     im2 = Image.open(image2)
     click.echo(ImageChops.difference(im1, im2).getbbox())
+
+
+@cli.group()
+def filter():
+    '''several effects'''
+    pass
+
+
+@filter.command()
+@click.argument('image', type=click.Path(exists=True), required=True)
+def blur(image):
+    im = Image.open(image)
+    im = im.filter(ImageFilter.BLUR)
+    save(im)
+
+
+@filter.command()
+@click.argument('image', type=click.Path(exists=True), required=True)
+def contour(image):
+    im = Image.open(image)
+    im = im.filter(ImageFilter.CONTOUR)
+    save(im)
+
+
+@filter.command()
+@click.argument('image', type=click.Path(exists=True), required=True)
+def detail(image):
+    im = Image.open(image)
+    im = im.filter(ImageFilter.DETAIL)
+    save(im)
+
+
+@filter.command()
+@click.argument('image', type=click.Path(exists=True), required=True)
+def edge_enhance(image):
+    im = Image.open(image)
+    im = im.filter(ImageFilter.EDGE_ENHANCE)
+    save(im)
+
+
+@filter.command()
+@click.argument('image', type=click.Path(exists=True), required=True)
+def edge_enhance_more(image):
+    im = Image.open(image)
+    im = im.filter(ImageFilter.EDGE_ENHANCE_MORE)
+    save(im)
+
+
+@filter.command()
+@click.argument('image', type=click.Path(exists=True), required=True)
+def emboss(image):
+    im = Image.open(image)
+    im = im.filter(ImageFilter.EMBOSS)
+    save(im)
+
+
+@filter.command()
+@click.argument('image', type=click.Path(exists=True), required=True)
+def find_edges(image):
+    im = Image.open(image)
+    im = im.filter(ImageFilter.FIND_EDGES)
+    save(im)
+
+
+@filter.command()
+@click.argument('image', type=click.Path(exists=True), required=True)
+@click.option('--radius', '-r', default=2.0)
+def gaussian_blur(image, radius):
+    im = Image.open(image)
+    im = im.filter(ImageFilter.GaussianBlur(radius))
+    save(im)
+
+
+@filter.command()
+@click.argument('image', type=click.Path(exists=True), required=True)
+def smooth(image):
+    im = Image.open(image)
+    im = im.filter(ImageFilter.SMOOTH)
+    save(im)
+
+
+@filter.command()
+@click.argument('image', type=click.Path(exists=True), required=True)
+def smooth_more(image):
+    im = Image.open(image)
+    im = im.filter(ImageFilter.SMOOTH_MORE)
+    save(im)
+
+
+@filter.command()
+@click.argument('image', type=click.Path(exists=True), required=True)
+def sharpen(image):
+    im = Image.open(image)
+    im = im.filter(ImageFilter.SHARPEN)
+    save(im)
+
+
+@filter.command(short_help='dilation')
+@click.argument('image', type=click.Path(exists=True), required=True)
+@click.option('--size', '-s', type=int, default=3)
+def max(image, size):
+    im = Image.open(image)
+    im = im.filter(ImageFilter.MaxFilter(size))
+    save(im)
+
+
+@filter.command()
+@click.argument('image', type=click.Path(exists=True), required=True)
+@click.option('--size', '-s', type=int, default=3)
+def median(image, size):
+    im = Image.open(image)
+    im = im.filter(ImageFilter.MedianFilter(size))
+    save(im)
+
+
+@filter.command(short_help='erosion')
+@click.argument('image', type=click.Path(exists=True), required=True)
+@click.option('--size', '-s', type=int, default=3)
+def min(image, size):
+    im = Image.open(image)
+    im = im.filter(ImageFilter.MinFilter(size))
+    save(im)
+
+
+@filter.command()
+@click.argument('image', type=click.Path(exists=True), required=True)
+@click.option('--size', '-s', type=int, default=3)
+def mod(image, size):
+    im = Image.open(image)
+    im = im.filter(ImageFilter.ModeFilter(size))
+    save(im)
+
+
+@filter.command(short_help='opening test')
+@click.argument('image', type=click.Path(exists=True), required=True)
+@click.option('--size', '-s', type=int, default=3)
+def closing(image, size):
+    im = Image.open(image)
+    im = im.convert("RGB")
+    im = im.filter(ImageFilter.MinFilter(size))\
+           .filter(ImageFilter.MinFilter(size))\
+           .filter(ImageFilter.MinFilter(size))\
+           .filter(ImageFilter.MaxFilter(size))\
+           .filter(ImageFilter.MaxFilter(size))\
+           .filter(ImageFilter.MaxFilter(size))\
+           .filter(ImageFilter.MaxFilter(size))\
+           .filter(ImageFilter.MaxFilter(size))\
+           .filter(ImageFilter.MaxFilter(size))\
+           .filter(ImageFilter.MinFilter(size))\
+           .filter(ImageFilter.MinFilter(size))\
+           .filter(ImageFilter.MinFilter(size))
+    save(im)
+
+
+@filter.command(short_help='opening test')
+@click.argument('image', type=click.Path(exists=True), required=True)
+@click.option('--size', '-s', type=int, default=3)
+def opening(image, size):
+    im = Image.open(image)
+    im = im.convert("RGB")
+    im = im.filter(ImageFilter.MaxFilter(size))\
+           .filter(ImageFilter.MaxFilter(size))\
+           .filter(ImageFilter.MaxFilter(size))\
+           .filter(ImageFilter.MinFilter(size))\
+           .filter(ImageFilter.MinFilter(size))\
+           .filter(ImageFilter.MinFilter(size))\
+           .filter(ImageFilter.MinFilter(size))\
+           .filter(ImageFilter.MinFilter(size))\
+           .filter(ImageFilter.MinFilter(size))\
+           .filter(ImageFilter.MinFilter(size))\
+           .filter(ImageFilter.MaxFilter(size))\
+           .filter(ImageFilter.MaxFilter(size))\
+           .filter(ImageFilter.MaxFilter(size))
+    save(im)
 
 
 def main():
