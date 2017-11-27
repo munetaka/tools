@@ -108,10 +108,20 @@ def equalize(image):
 @cli.command()
 @click.argument('image1', type=click.Path(exists=True), required=True)
 @click.argument('image2', type=click.Path(exists=True), required=True)
+def check_similarity(image1, image2):
+    im1 = Image.open(image1)
+    im2 = Image.open(image2)
+    click.echo(ImageChops.difference(im1, im2).getbbox() is None)
+
+
+@cli.command()
+@click.argument('image1', type=click.Path(exists=True), required=True)
+@click.argument('image2', type=click.Path(exists=True), required=True)
 def difference(image1, image2):
     im1 = Image.open(image1)
     im2 = Image.open(image2)
-    click.echo(ImageChops.difference(im1, im2).getbbox())
+    im = ImageChops.difference(im1, im2)
+    save(im)
 
 
 @cli.group()
