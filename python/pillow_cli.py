@@ -245,7 +245,7 @@ def mod(image, size):
     save(im)
 
 
-@filter.command(short_help='opening test')
+@filter.command(short_help='closing test')
 @click.argument('image', type=click.Path(exists=True), required=True)
 @click.option('--size', '-s', type=int, default=3)
 def closing(image, size):
