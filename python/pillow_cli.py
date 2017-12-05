@@ -298,6 +298,20 @@ def opening(image, size):
     save(im)
 
 
+@filter.command(short_help='opening test')
+@click.argument('image', type=click.Path(exists=True), required=True)
+@click.option('--threshold', '-t', type=int, default=0)
+def line_drawing(image, threshold):
+    im_org = Image.open(image)
+    gray = im_org.convert("L")
+    gray2 = gray.filter(ImageFilter.MaxFilter(5))
+    im_inv = ImageChops.difference(gray, gray2)
+    im = ImageOps.invert(im_inv)
+    if threshold > 0:
+        im = im.point(lambda x: 0 if x < threshold else 255)
+    save(im)
+
+
 def main():
     cli(obj={})
 
