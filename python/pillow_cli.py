@@ -30,6 +30,14 @@ def convert_pil_to_array(img):
     return np.asarray(img)
 
 
+@cli.command(short_help='show image info')
+@click.argument('image', type=click.Path(exists=True), required=True)
+def info(image):
+    '''show IMAGE format, size, mode'''
+    im = Image.open(image)
+    click.echo('format\t{}\nsize\t{}\nmode\t{}'.format(im.format, im.size, im.mode))
+
+
 @cli.command(short_help='resize image')
 @click.argument('image', type=click.Path(exists=True), required=True)
 @click.argument('size', type=click.Tuple([int, int]), required=True)
