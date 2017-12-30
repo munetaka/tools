@@ -32,11 +32,11 @@ def convert_pil_to_array(img):
 
 @cli.command(short_help='resize image')
 @click.argument('image', type=click.Path(exists=True), required=True)
-@click.argument('size', type=click.Path(exists=True), required=True)
+@click.argument('size', type=click.Tuple([int, int]), required=True)
 def resize(image, size):
     '''resize IMAGE SIZE. SIZE is tuple (width, height)'''
     im = Image.open(image)
-    im.resize(size)
+    im = im.resize(size)
     save(im)
 
 
