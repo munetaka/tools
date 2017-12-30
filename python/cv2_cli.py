@@ -1,5 +1,6 @@
 import click
 import cv2
+import math
 import numpy as np
 
 
@@ -27,6 +28,29 @@ def grayscale(image):
     im = cv2.imread(image)
     im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
     save(im)
+
+
+@cli.command()
+@click.argument('base_image', type=click.Path(exists=True), required=True)
+@click.argument('correlate_image', type=click.Path(exists=True), required=True)
+def correlate(base_image, correlate_image):
+    base_im_gray = cv2.imread(base_image, 0)
+    save(base_im_gray)
+    correlate_im_gray = cv2.imread(correlate_image, 0)
+    (dx, dy), _ = cv2.phaseCorrelate(np.float32(correlate_im_gray), np.float32(base_im_gray))
+    M = np.float32([[1, 0, dx], [0, 1, dy]])
+    rows, cols = base_im_gray.shape
+    im_moved = cv2.warpAffine(cv2.imread(correlate_image, 1), M, (cols, rows))
+
+    # fill outline with dummy color
+    mask = np.full(base_im_gray.shape, 255, dtype=np.uint8)
+    mask[math.ceil(abs(dy)):rows, math.ceil(abs(dx)):cols] = 0
+    if dx < 0:
+        mask = mask.T[::-1].T
+    if dy < 0:
+        mask = mask[::-1]
+    im_moved = cv2.inpaint(im_moved, mask, 3, cv2.INPAINT_TELEA)
+    save(im_moved)
 
 
 @cli.group()
