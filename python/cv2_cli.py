@@ -54,6 +54,47 @@ def correlate(base_image, correlate_image):
 
 
 @cli.group()
+def create():
+    pass
+
+
+def get_gradation_2d(start, stop, width, height, is_horizontal=False):
+    if is_horizontal:
+        return np.tile(np.linspace(start, stop, height), (width, 1))
+    else:
+        return np.tile(np.linspace(start, stop, width), (height, 1)).T
+
+
+@create.command()
+@click.option('--start', '-s', type=int, required=False, default=0)
+@click.option('--end', '-e', type=int, required=False, default=255)
+@click.option('--width', '-w', type=int, required=False, default=100)
+@click.option('--height', '-h', type=int, required=False, default=100)
+@click.option('--is_horizontal', is_flag=True, default=False)
+def gradation_2d(start, end, width, height, is_horizontal):
+    start = start / 255
+    end = end / 255
+    image = get_gradation_2d(start, end, width, height, is_horizontal)
+    save(image)
+
+
+@create.command()
+@click.option('--start', '-s', type=click.Tuple([int, int, int]), required=False, default=(192, 0, 0))
+@click.option('--end', '-e', type=click.Tuple([int, int, int]), required=False, default=(64, 255, 255))
+@click.option('--width', '-w', type=int, required=False, default=100)
+@click.option('--height', '-h', type=int, required=False, default=100)
+@click.option('--is_horizontal', type=click.Tuple([bool, bool, bool]), default=(False, False, True))
+def gradation_3d(start, end, width, height, is_horizontal):
+    image = np.zeros((width, height, len(start)), dtype=np.float)
+    start = (x / 255 for x in start)
+    end = (x / 255 for x in end)
+    for i, (st, en, is_h) in enumerate(zip(start, end, is_horizontal)):
+        grad = get_gradation_2d(st, en, width, height, is_h)
+        image[:, :, i] = grad
+    save(image)
+
+
+@cli.group()
 def filter():
     pass
 
