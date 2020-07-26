@@ -6,29 +6,21 @@ from util import is_weekend_or_holiday
 def main():
     # https://api.slack.com/legacy/custom-integrations/legacy-tokens
     token = ''
-    url = 'https://slack.com/api/chat.command'
     channel = ''  # DM Slackbot
 
     if is_weekend_or_holiday():
-        text = 'today is non-working day'
-        params = {
-            'token': token,
-            'channel': channel,
-            # 'command': command,
-            'text': text,
-        }
-    else:
-        # command = '/jobcan_touch'
-        text = 'today is working day'
-        params = {
-            'token': token,
-            'channel': channel,
-            # 'command': command,
-            'text': text,
-        }
+        print('today is non-working day')
+        exit()
 
+    url = 'https://slack.com/api/chat.command'
+    command = '/jobcan_touch'
+    params = {
+        'token': token,
+        'channel': channel,
+        'command': command,
+    }
     res = requests.post(url, params=params)
-    print(res)
+    print(res.text)
 
 
 if __name__ == '__main__':
