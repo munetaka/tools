@@ -142,7 +142,7 @@ def filter():
 @click.argument('image', type=click.Path(exists=True), required=True)
 def blur(image):
     im = Image.open(image)
-    im = im.filter(ImageFilter.BLUR)
+    im = im.filter(ImageFilter.BLUR())
     save(im)
 
 
