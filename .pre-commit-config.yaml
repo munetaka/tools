@@ -47,3 +47,10 @@ repos:
   hooks:
     - id: markdownlint
       args: [-r, ~MD013]
+
+- repo: https://github.com/jumanjihouse/pre-commit-hooks
+  rev: 3.0.0
+  hooks:
+    - id: shellcheck
+    - id: shfmt
+      args: [-i, '2', -ci, -sr]
